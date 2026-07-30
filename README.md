@@ -1,4 +1,4 @@
-# 🎓 EduTrack — Student Management System
+# 🎓  Student Management System
 
 A fully functional **Student Management System** built with vanilla HTML, CSS, and JavaScript. Data is persisted in the browser via `localStorage` — no backend or build tools required.
 
