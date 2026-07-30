@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Management System</title>
+  <link rel="stylesheet" href="style1.css" />
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">🎓</div>
+        <div>
+          <div class="logo-title">Education</div>
+          <div class="logo-sub">Student Management</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <a href="#" class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a href="#" class="nav-item" data-page="students">
+        <span class="nav-icon">👨‍🎓</span> Students
+      </a>
+      <a href="#" class="nav-item" data-page="courses">
+        <span class="nav-icon">📚</span> Courses
+      </a>
+      <a href="#" class="nav-item" data-page="grades">
+        <span class="nav-icon">📝</span> Grades
+      </a>
+      <a href="#" class="nav-item" data-page="attendance">
+        <span class="nav-icon">✅</span> Attendance
+      </a>
+      <a href="#" class="nav-item" data-page="reports">
+        <span class="nav-icon">📈</span> Reports
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">A</div>
+        <div>
+          <div class="user-name">Admin User</div>
+          <div class="user-role">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main" id="main">
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div class="topbar-title" id="pageTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" id="topbarActionBtn" onclick="openAddModal()">+ Add Student</button>
+      </div>
+    </header>
+
+    <!-- Dashboard Page -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-inner">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">👨‍🎓</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statTotalStudents">0</div>
+              <div class="stat-label">Total Students</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">📚</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statTotalCourses">0</div>
+              <div class="stat-label">Total Courses</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">📝</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statAvgGrade">—</div>
+              <div class="stat-label">Average Grade</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">✅</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statAvgAttendance">—</div>
+              <div class="stat-label">Avg Attendance</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>Recent Students</h3>
+            </div>
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                  <tr><th>Name</th><th>Course</th><th>Grade</th><th>Status</th></tr>
+                </thead>
+                <tbody id="recentStudentsTbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Course Enrollment</h3></div>
+            <div class="card-body" id="courseEnrollmentChart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Page -->
+    <div class="page" id="page-students">
+      <div class="page-inner">
+        <div class="toolbar">
+          <input type="text" class="search-input" id="studentSearch" placeholder="Search students..." oninput="renderStudents()" />
+          <select class="filter-select" id="studentCourseFilter" onchange="renderStudents()">
+            <option value="">All Courses</option>
+          </select>
+          <select class="filter-select" id="studentStatusFilter" onchange="renderStudents()">
+            <option value="">All Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Name</th><th>Email</th><th>Course</th>
+                  <th>Year</th><th>GPA</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTbody"></tbody>
+            </table>
+            <div class="empty-state" id="studentsEmpty" style="display:none">
+              <div class="empty-icon">👨‍🎓</div>
+              <div class="empty-text">No students found</div>
+              <button class="btn btn-primary" onclick="openAddModal()">Add First Student</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Courses Page -->
+    <div class="page" id="page-courses">
+      <div class="page-inner">
+        <div class="toolbar">
+          <input type="text" class="search-input" id="courseSearch" placeholder="Search courses..." oninput="renderCourses()" />
+        </div>
+        <div class="courses-grid" id="coursesGrid"></div>
+        <div class="empty-state" id="coursesEmpty" style="display:none">
+          <div class="empty-icon">📚</div>
+          <div class="empty-text">No courses yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grades Page -->
+    <div class="page" id="page-grades">
+      <div class="page-inner">
+        <div class="toolbar">
+          <select class="filter-select" id="gradeStudentFilter" onchange="renderGrades()">
+            <option value="">All Students</option>
+          </select>
+          <select class="filter-select" id="gradeCourseFilter" onchange="renderGrades()">
+            <option value="">All Courses</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student</th><th>Course</th><th>Assignment</th>
+                  <th>Score</th><th>Grade</th><th>Date</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="gradesTbody"></tbody>
+            </table>
+            <div class="empty-state" id="gradesEmpty" style="display:none">
+              <div class="empty-icon">📝</div>
+              <div class="empty-text">No grades recorded</div>
+              <button class="btn btn-primary" onclick="openAddGradeModal()">Add Grade</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Page -->
+    <div class="page" id="page-attendance">
+      <div class="page-inner">
+        <div class="toolbar">
+          <select class="filter-select" id="attendanceCourseFilter" onchange="renderAttendance()">
+            <option value="">All Courses</option>
+          </select>
+          <input type="date" class="filter-select" id="attendanceDateFilter" onchange="renderAttendance()" />
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Student</th><th>Course</th><th>Date</th>
+                  <th>Status</th><th>Notes</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="attendanceTbody"></tbody>
+            </table>
+            <div class="empty-state" id="attendanceEmpty" style="display:none">
+              <div class="empty-icon">✅</div>
+              <div class="empty-text">No attendance records</div>
+              <button class="btn btn-primary" onclick="openAddAttendanceModal()">Mark Attendance</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reports Page -->
+    <div class="page" id="page-reports">
+      <div class="page-inner">
+        <div class="reports-grid">
+          <div class="card report-card">
+            <div class="card-header"><h3>📊 Grade Distribution</h3></div>
+            <div class="card-body" id="gradeDistChart"></div>
+          </div>
+          <div class="card report-card">
+            <div class="card-header"><h3>✅ Attendance Summary</h3></div>
+            <div class="card-body" id="attendanceSummary"></div>
+          </div>
+          <div class="card report-card">
+            <div class="card-header"><h3>🏆 Top Performers</h3></div>
+            <div class="card-body" id="topPerformers"></div>
+          </div>
+          <div class="card report-card">
+            <div class="card-header"><h3>⚠️ At-Risk Students</h3></div>
+            <div class="card-body" id="atRiskStudents"></div>
+          </div>
+        </div>
+        <div class="export-actions">
+          <button class="btn btn-outline" onclick="exportStudentsCSV()">⬇ Export Students CSV</button>
+          <button class="btn btn-outline" onclick="exportGradesCSV()">⬇ Export Grades CSV</button>
+          <button class="btn btn-outline" onclick="printReport()">🖨 Print Report</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add/Edit Student Modal -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="studentModalTitle">Add Student</h2>
+        <button class="modal-close" onclick="closeModal('studentModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="studentForm" onsubmit="saveStudent(event)">
+          <input type="hidden" id="studentId" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label>First Name *</label>
+              <input type="text" id="sfFirstName" class="form-control" required placeholder="John" />
+            </div>
+            <div class="form-group">
+              <label>Last Name *</label>
+              <input type="text" id="sfLastName" class="form-control" required placeholder="Doe" />
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" id="sfEmail" class="form-control" required placeholder="john@school.edu" />
+            </div>
+            <div class="form-group">
+              <label>Phone</label>
+              <input type="text" id="sfPhone" class="form-control" placeholder="+1-555-0000" />
+            </div>
+            <div class="form-group">
+              <label>Date of Birth</label>
+              <input type="date" id="sfDob" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>Enrollment Date</label>
+              <input type="date" id="sfEnrollDate" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>Course *</label>
+              <select id="sfCourse" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Year Level</label>
+              <select id="sfYear" class="form-control">
+                <option>1st Year</option>
+                <option>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="sfStatus" class="form-control">
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <input type="text" id="sfAddress" class="form-control" placeholder="123 Main St" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('studentModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="document.getElementById('studentForm').requestSubmit()">Save Student</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Grade Modal -->
+  <div class="modal-overlay" id="gradeModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="gradeModalTitle">Add Grade</h2>
+        <button class="modal-close" onclick="closeModal('gradeModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="gradeForm" onsubmit="saveGrade(event)">
+          <input type="hidden" id="gradeId" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Student *</label>
+              <select id="gfStudent" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Course *</label>
+              <select id="gfCourse" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Assignment/Exam *</label>
+              <input type="text" id="gfAssignment" class="form-control" required placeholder="Midterm Exam" />
+            </div>
+            <div class="form-group">
+              <label>Score (0–100) *</label>
+              <input type="number" id="gfScore" class="form-control" min="0" max="100" required placeholder="85" />
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="gfDate" class="form-control" />
+            </div>
+            <div class="form-group">
+              <label>Remarks</label>
+              <input type="text" id="gfRemarks" class="form-control" placeholder="Excellent work" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('gradeModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="document.getElementById('gradeForm').requestSubmit()">Save Grade</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Attendance Modal -->
+  <div class="modal-overlay" id="attendanceModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Mark Attendance</h2>
+        <button class="modal-close" onclick="closeModal('attendanceModal')">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="attendanceForm" onsubmit="saveAttendance(event)">
+          <input type="hidden" id="attendanceId" />
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Student *</label>
+              <select id="afStudent" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Course *</label>
+              <select id="afCourse" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+              <label>Date *</label>
+              <input type="date" id="afDate" class="form-control" required />
+            </div>
+            <div class="form-group">
+              <label>Status *</label>
+              <select id="afStatus" class="form-control" required>
+                <option>Present</option>
+                <option>Absent</option>
+                <option>Late</option>
+                <option>Excused</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Notes</label>
+              <input type="text" id="afNotes" class="form-control" placeholder="Optional notes" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('attendanceModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="document.getElementById('attendanceForm').requestSubmit()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
