@@ -1,0 +1,13 @@
+{
+  "name": "student-management-system",
+  "version": "1.0.0",
+  "description": "EduTrack — A fully functional Student Management System (Final Project)",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "python3 -m http.server 8080"
+  },
+  "keywords": ["student", "management", "system", "education", "javascript"],
+  "author": "Internship Student",
+  "license": "MIT"
+}
